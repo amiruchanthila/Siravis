@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIRAVIS — Next-Gen Digital Ecosystem | AI, Animation, Web & Apps</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#312e81',
+                            glow: '#00f2fe'
+                        },
+                        cyanGlow: '#06b6d4',
+                        violetGlow: '#a855f7'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel-hover:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
+            transform: translateY(-4px);
+        }
+
+        /* Custom glow accents */
+        .glow-effect {
+            position: relative;
+        }
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #6366f1, #06b6d4, #a855f7);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .glow-effect:hover::before {
+            opacity: 0.6;
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-500 selection:text-white">
+
+    <!-- Dynamic Canvas Background -->
+    <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-40"></canvas>
+
+    <!-- NAVBAR -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-4 px-4 sm:px-8" id="navbar">
+        <div class="max-w-7xl mx-auto glass-panel rounded-2xl px-6 py-3 flex items-center justify-between border border-slate-800/80">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-cyan-500 to-violet-500 flex items-center justify-center p-0.5 shadow-lg shadow-indigo-500/20 group-hover:rotate-6 transition-transform">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <span class="font-extrabold text-xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">S</span>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-xl tracking-wider text-white">SIRAVIS</span>
+                    <span class="text-[9px] tracking-widest text-indigo-400 uppercase -mt-1 font-mono">Digital Ecosystem</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#services" class="hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="grid" class="w-4 h-4"></i> Sub-Brands
+                </a>
+                <a href="#playground" class="hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="terminal" class="w-4 h-4"></i> Live Playground
+                </a>
+                <a href="#ecosystem" class="hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="layers" class="w-4 h-4"></i> Architecture
+                </a>
+                <a href="#contact" class="hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="message-square" class="w-4 h-4"></i> Contact
+                </a>
+            </nav>
+
+            <!-- Actions & CTA -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleGlowMode()" title="Toggle Visual Accent" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
+                </button>
+                <button onclick="openBookingModal()" class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-xs font-semibold rounded-xl group bg-gradient-to-br from-indigo-500 via-cyan-500 to-purple-600 group-hover:from-indigo-500 group-hover:to-purple-600 hover:text-white text-white shadow-lg shadow-indigo-500/25">
+                    <span class="relative px-4 py-2.5 transition-all ease-in duration-75 bg-slate-950 rounded-[10px] group-hover:bg-opacity-0 flex items-center gap-2">
+                        Get Started <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 pt-32">
+        <!-- HERO SECTION -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 flex flex-col items-center text-center">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-indigo-500/30 text-xs font-medium text-indigo-300 mb-8 animate-pulse-slow shadow-lg shadow-indigo-950">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                <span>Architecting Next-Generation Digital Experiences</span>
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight max-w-5xl text-gradient leading-[1.15] mb-6">
+                One Platform. Four Specialized <span class="text-gradient-cyan">Powerhouses</span>.
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="max-w-3xl text-lg sm:text-xl text-slate-400 font-normal leading-relaxed mb-10">
+                Siravis integrates enterprise Artificial Intelligence, cinematic Motion Graphics, custom Web Software, and cross-platform Mobile Apps into a unified digital ecosystem.
+            </p>
+
+            <!-- Hero Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-16">
+                <button onclick="openBookingModal()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 font-semibold text-white shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
+                    Start Your Project <i data-lucide="rocket" class="w-5 h-5"></i>
+                </button>
+                <a href="#services" class="w-full sm:w-auto px-8 py-4 rounded-xl glass-panel border border-slate-800 text-slate-300 font-semibold hover:border-slate-700 hover:text-white transition flex items-center justify-center gap-2">
+                    Explore Ecosystem <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="w-full max-w-5xl grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 p-6 glass-panel rounded-2xl border border-slate-800/80">
+                <div class="flex flex-col items-center p-3">
+                    <span class="text-3xl sm:text-4xl font-extrabold text-indigo-400 font-mono" id="stat-ai">99.8%</span>
+                    <span class="text-xs text-slate-400 mt-1">AI Accuracy & Precision</span>
+                </div>
+                <div class="flex flex-col items-center p-3 border-l border-slate-800/80">
+                    <span class="text-3xl sm:text-4xl font-extrabold text-cyan-400 font-mono" id="stat-fps">120+</span>
+                    <span class="text-xs text-slate-400 mt-1">VFX Render Speed (FPS)</span>
+                </div>
+                <div class="flex flex-col items-center p-3 border-l border-slate-800/80">
+                    <span class="text-3xl sm:text-4xl font-extrabold text-violet-400 font-mono" id="stat-web">99.9%</span>
+                    <span class="text-xs text-slate-400 mt-1">Web Uptime Guarantee</span>
+                </div>
+                <div class="flex flex-col items-center p-3 border-l border-slate-800/80">
+                    <span class="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono" id="stat-apps">1M+</span>
+                    <span class="text-xs text-slate-400 mt-1">App Installs & Users</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUB-BRAND SHOWCASE SECTION -->
+        <section id="services" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="flex flex-col items-center text-center mb-12">
+                <span class="text-xs font-semibold text-indigo-400 uppercase tracking-widest font-mono mb-2">Capabilities</span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                    The Siravis Specialized Pillars
+                </h2>
+                <p class="text-slate-400 mt-4 max-w-2xl text-base sm:text-lg">
+                    Select a sub-brand below to explore tailor-made capabilities engineered for scale.
+                </p>
+
+                <!-- Filter Tabs -->
+                <div class="flex flex-wrap justify-center gap-2 mt-8 p-1.5 glass-panel rounded-2xl border border-slate-800">
+                    <button onclick="filterServices('all')" id="tab-all" class="service-tab px-5 py-2.5 rounded-xl text-sm font-medium transition text-white bg-indigo-600">All Platforms</button>
+                    <button onclick="filterServices('ai')" id="tab-ai" class="service-tab px-5 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white">Siravis AI</button>
+                    <button onclick="filterServices('animation')" id="tab-animation" class="service-tab px-5 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white">Siravis Animation</button>
+                    <button onclick="filterServices('web')" id="tab-web" class="service-tab px-5 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white">Siravis Web Studio</button>
+                    <button onclick="filterServices('apps')" id="tab-apps" class="service-tab px-5 py-2.5 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white">Siravis Apps</button>
+                </div>
+            </div>
+
+            <!-- Grid of 4 Pillars -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="services-grid">
+                
+                <!-- 1. SIRAVIS AI -->
+                <div class="service-card glass-panel glass-panel-hover rounded-3xl p-8 border border-slate-800/80 relative overflow-hidden group" data-category="ai">
+                    <div class="absolute -right-12 -top-12 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                            <i data-lucide="bot" class="w-7 h-7"></i>
+                        </div>
+                        <span class="text-xs font-mono px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">01 / INTELLIGENCE</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white mb-3">Siravis AI</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Autonomous AI agents, enterprise LLM fine-tuning, computer vision systems, and custom automated predictive pipelines tailored for complex workflows.
+                    </p>
+
+                    <!-- Features List -->
+                    <div class="space-y-2.5 mb-8 text-xs text-slate-300">
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400"></i> Custom LLM & RAG Knowledge Systems</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400"></i> Autonomous Task Automation & Multi-Agents</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400"></i> Real-time Predictive Analytics & NLP APIs</div>
+                    </div>
+
+                    <!-- Tech Stack Pills -->
+                    <div class="flex flex-wrap gap-2 mb-8 pt-4 border-t border-slate-800/60">
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Python</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">PyTorch</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">LangChain</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">OpenAI / Claude API</span>
+                    </div>
+
+                    <button onclick="openDetailModal('ai')" class="w-full py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-sm font-semibold hover:bg-indigo-600 hover:border-indigo-500 hover:text-white transition flex items-center justify-center gap-2">
+                        Explore AI Solutions <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- 2. SIRAVIS ANIMATION -->
+                <div class="service-card glass-panel glass-panel-hover rounded-3xl p-8 border border-slate-800/80 relative overflow-hidden group" data-category="animation">
+                    <div class="absolute -right-12 -top-12 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl group-hover:bg-cyan-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                            <i data-lucide="clapperboard" class="w-7 h-7"></i>
+                        </div>
+                        <span class="text-xs font-mono px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300">02 / MEDIA & VFX</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white mb-3">Siravis Animation</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Hyper-realistic 3D visual effects, 2D motion graphics, brand identities, and real-time interactive canvas animations for immersive storytelling.
+                    </p>
+
+                    <!-- Features List -->
+                    <div class="space-y-2.5 mb-8 text-xs text-slate-300">
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400"></i> Cinematic 3D Product Renders & Animations</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400"></i> Interactive WebGL & Three.js Canvas Visuals</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400"></i> UI/UX Motion Design & Micro-Interactions</div>
+                    </div>
+
+                    <!-- Tech Stack Pills -->
+                    <div class="flex flex-wrap gap-2 mb-8 pt-4 border-t border-slate-800/60">
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Blender</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Unreal Engine</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Three.js</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">After Effects</span>
+                    </div>
+
+                    <button onclick="openDetailModal('animation')" class="w-full py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-sm font-semibold hover:bg-cyan-600 hover:border-cyan-500 hover:text-white transition flex items-center justify-center gap-2">
+                        Explore Motion & VFX <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- 3. SIRAVIS WEB STUDIO -->
+                <div class="service-card glass-panel glass-panel-hover rounded-3xl p-8 border border-slate-800/80 relative overflow-hidden group" data-category="web">
+                    <div class="absolute -right-12 -top-12 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl group-hover:bg-violet-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400">
+                            <i data-lucide="globe" class="w-7 h-7"></i>
+                        </div>
+                        <span class="text-xs font-mono px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300">03 / WEB ENGINEERING</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white mb-3">Siravis Web Studio</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        High-performance Web Applications, SaaS platforms, corporate landing experiences, and e-commerce architectures optimized for conversion & speed.
+                    </p>
+
+                    <!-- Features List -->
+                    <div class="space-y-2.5 mb-8 text-xs text-slate-300">
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-violet-400"></i> Ultra-Fast Next.js & React Architectures</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-violet-400"></i> Bespoke Enterprise UI/UX Design Systems</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-violet-400"></i> Scalable Headless CMS & Cloud Hosting</div>
+                    </div>
+
+                    <!-- Tech Stack Pills -->
+                    <div class="flex flex-wrap gap-2 mb-8 pt-4 border-t border-slate-800/60">
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Next.js</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">TypeScript</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Tailwind CSS</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Node.js</span>
+                    </div>
+
+                    <button onclick="openDetailModal('web')" class="w-full py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-sm font-semibold hover:bg-violet-600 hover:border-violet-500 hover:text-white transition flex items-center justify-center gap-2">
+                        Explore Web Studio <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- 4. SIRAVIS APPS -->
+                <div class="service-card glass-panel glass-panel-hover rounded-3xl p-8 border border-slate-800/80 relative overflow-hidden group" data-category="apps">
+                    <div class="absolute -right-12 -top-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all"></div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                            <i data-lucide="smartphone" class="w-7 h-7"></i>
+                        </div>
+                        <span class="text-xs font-mono px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">04 / MOBILE ECOSYSTEM</span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white mb-3">Siravis Apps</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Cross-platform iOS and Android mobile solutions engineered for security, high throughput, fluid micro-interactions, and offline sync.
+                    </p>
+
+                    <!-- Features List -->
+                    <div class="space-y-2.5 mb-8 text-xs text-slate-300">
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Native iOS (Swift) & Android (Kotlin)</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Flutter & React Native Cross-Platform</div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Enterprise SDK Integration & Biometric Auth</div>
+                    </div>
+
+                    <!-- Tech Stack Pills -->
+                    <div class="flex flex-wrap gap-2 mb-8 pt-4 border-t border-slate-800/60">
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Flutter</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">React Native</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Swift</span>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">Firebase / AWS</span>
+                    </div>
+
+                    <button onclick="openDetailModal('apps')" class="w-full py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-sm font-semibold hover:bg-emerald-600 hover:border-emerald-500 hover:text-white transition flex items-center justify-center gap-2">
+                        Explore App Development <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- INTERACTIVE PLAYGROUND SHOWCASE SECTION -->
+        <section id="playground" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-800/60">
+            <div class="flex flex-col items-center text-center mb-16">
+                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-widest font-mono mb-2">Interactive Demos</span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                    Siravis Live Feature Playground
+                </h2>
+                <p class="text-slate-400 mt-4 max-w-2xl text-base">
+                    Test drive our actual technology capabilities live directly in your browser.
+                </p>
+            </div>
+
+            <!-- Playground Tabs Container -->
+            <div class="glass-panel rounded-3xl border border-slate-800/80 p-6 sm:p-8">
+                <!-- Navigation Switcher for Playgrounds -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+                    <button onclick="switchPlayground('ai')" id="pg-tab-ai" class="pg-tab flex items-center justify-center gap-2 p-3.5 rounded-xl text-sm font-semibold border transition bg-indigo-600 border-indigo-500 text-white">
+                        <i data-lucide="bot" class="w-4 h-4"></i> AI Agent Demo
+                    </button>
+                    <button onclick="switchPlayground('animation')" id="pg-tab-animation" class="pg-tab flex items-center justify-center gap-2 p-3.5 rounded-xl text-sm font-semibold border border-slate-800 bg-slate-900 text-slate-400 hover:text-white transition">
+                        <i data-lucide="play-circle" class="w-4 h-4"></i> Visual FX Engine
+                    </button>
+                    <button onclick="switchPlayground('web')" id="pg-tab-web" class="pg-tab flex items-center justify-center gap-2 p-3.5 rounded-xl text-sm font-semibold border border-slate-800 bg-slate-900 text-slate-400 hover:text-white transition">
+                        <i data-lucide="monitor" class="w-4 h-4"></i> Responsive Web Studio
+                    </button>
+                    <button onclick="switchPlayground('apps')" id="pg-tab-apps" class="pg-tab flex items-center justify-center gap-2 p-3.5 rounded-xl text-sm font-semibold border border-slate-800 bg-slate-900 text-slate-400 hover:text-white transition">
+                        <i data-lucide="smartphone" class="w-4 h-4"></i> App Simulator
+                    </button>
+                </div>
+
+                <!-- PLAYGROUND CONTENT PANELS -->
+
+                <!-- 1. AI PLAYGROUND -->
+                <div id="pg-panel-ai" class="pg-panel block">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-bold text-white">Siravis AI Prompt Simulator</h4>
+                            <p class="text-slate-400 text-xs sm:text-sm">
+                                Test our built-in enterprise LLM prompt router and automated task extraction pipeline.
+                            </p>
+                            <div class="space-y-2">
+                                <label class="text-xs text-slate-400 font-mono">Sample Prompts:</label>
+                                <button onclick="setAiPrompt('Analyze user engagement churn for Q3 and construct predictive retention model.')" class="block w-full text-left p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-xs text-slate-300 hover:border-indigo-500/50 transition">
+                                    📊 Analyze user churn & predict retention
+                                </button>
+                                <button onclick="setAiPrompt('Generate automated GraphQL schema and OpenAPI endpoints from SQL database structure.')" class="block w-full text-left p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-xs text-slate-300 hover:border-indigo-500/50 transition">
+                                    ⚙️ Generate GraphQL Schema from SQL
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-2 bg-slate-950 rounded-2xl border border-slate-800 p-4 sm:p-6 flex flex-col h-96">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs font-mono text-slate-400">
+                                <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> Siravis AI Agent v4.2 [Active]</span>
+                                <span>Latency: 12ms</span>
+                            </div>
+
+                            <div class="flex-1 overflow-y-auto py-4 space-y-4 code-font text-xs" id="chat-box">
+                                <div class="bg-slate-900/80 p-3 rounded-xl text-indigo-300 border border-slate-800 max-w-[85%]">
+                                    <span class="text-[10px] text-indigo-400 font-bold block mb-1">SYSTEM:</span>
+                                    Welcome to Siravis AI Core. Select a sample prompt or type a custom task request below to inspect output synthesis.
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 pt-3 border-t border-slate-800">
+                                <input type="text" id="ai-input" placeholder="Type prompt or command..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                                <button onclick="runAiDemo()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1">
+                                    Run <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. ANIMATION PLAYGROUND -->
+                <div id="pg-panel-animation" class="pg-panel hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-bold text-white">Real-Time VFX Canvas Render</h4>
+                            <p class="text-slate-400 text-xs sm:text-sm">
+                                Adjust parameters in real time to test Siravis interactive particle systems and animation framerates.
+                            </p>
+                            
+                            <div class="space-y-4 pt-2">
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>Particle Speed</span>
+                                        <span id="speed-val" class="font-mono text-cyan-400">1.5x</span>
+                                    </div>
+                                    <input type="range" min="0.2" max="4.0" step="0.1" value="1.5" id="anim-speed" oninput="updateAnimParams()" class="w-full accent-cyan-500 bg-slate-900">
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>Particle Count</span>
+                                        <span id="count-val" class="font-mono text-cyan-400">150</span>
+                                    </div>
+                                    <input type="range" min="50" max="400" step="10" value="150" id="anim-count" oninput="updateAnimParams()" class="w-full accent-cyan-500 bg-slate-900">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-2 relative h-80 rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center">
+                            <canvas id="vfx-canvas" class="w-full h-full"></canvas>
+                            <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur px-3 py-1.5 rounded-lg border border-slate-800 text-[11px] font-mono text-cyan-400">
+                                FPS: <span id="vfx-fps">60</span> | Render Engine: Canvas2D GL
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. WEB STUDIO PLAYGROUND -->
+                <div id="pg-panel-web" class="pg-panel hidden">
+                    <div class="flex flex-col items-center">
+                        <!-- Switch Viewports -->
+                        <div class="flex items-center gap-2 mb-6 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+                            <button onclick="setWebViewport('desktop')" id="vp-desktop" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-violet-600 text-white transition flex items-center gap-1.5">
+                                <i data-lucide="monitor" class="w-3.5 h-3.5"></i> Desktop
+                            </button>
+                            <button onclick="setWebViewport('tablet')" id="vp-tablet" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                                <i data-lucide="tablet" class="w-3.5 h-3.5"></i> Tablet
+                            </button>
+                            <button onclick="setWebViewport('mobile')" id="vp-mobile" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Mobile
+                            </button>
+                        </div>
+
+                        <!-- Device Wrapper Container -->
+                        <div id="web-frame-wrapper" class="w-full max-w-4xl transition-all duration-500 border border-slate-800 rounded-2xl overflow-hidden bg-slate-950 shadow-2xl">
+                            <!-- Browser Bar -->
+                            <div class="bg-slate-900 px-4 py-2.5 flex items-center gap-3 border-b border-slate-800">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                                </div>
+                                <div class="flex-1 bg-slate-950 rounded-lg px-3 py-1 text-center text-xs font-mono text-slate-400 flex items-center justify-center gap-2 border border-slate-800/80">
+                                    <i data-lucide="lock" class="w-3 h-3 text-emerald-400"></i> https://preview.siravis.studio
+                                </div>
+                            </div>
+                            
+                            <!-- Mock Webpage View -->
+                            <div class="p-8 space-y-6 text-center">
+                                <div class="inline-block px-3 py-1 bg-violet-500/10 text-violet-400 rounded-full text-xs font-mono">Ultra-Fast React / Next.js</div>
+                                <h3 class="text-2xl font-bold text-white">Enterprise Scalability Built-In</h3>
+                                <p class="text-xs text-slate-400 max-w-lg mx-auto">This interactive preview demonstrates responsive layout fluidity across breakpoints with optimized core web vitals.</p>
+                                <div class="grid grid-cols-3 gap-3 max-w-md mx-auto pt-4">
+                                    <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs">
+                                        <div class="font-bold text-violet-400">100</div>
+                                        <div class="text-[10px] text-slate-500">Lighthouse</div>
+                                    </div>
+                                    <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs">
+                                        <div class="font-bold text-emerald-400">&lt; 0.2s</div>
+                                        <div class="text-[10px] text-slate-500">First Byte</div>
+                                    </div>
+                                    <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs">
+                                        <div class="font-bold text-cyan-400">0.00</div>
+                                        <div class="text-[10px] text-slate-500">CLS Shift</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. APPS PLAYGROUND -->
+                <div id="pg-panel-apps" class="pg-panel hidden">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-12 py-4">
+                        <!-- Phone Frame -->
+                        <div class="w-64 h-[460px] bg-slate-950 border-4 border-slate-800 rounded-[40px] p-4 flex flex-col relative shadow-2xl shadow-emerald-950/20">
+                            <!-- Notch -->
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-slate-800 rounded-b-xl"></div>
+                            
+                            <!-- Phone Screen Content -->
+                            <div class="flex-1 bg-slate-900 rounded-[28px] pt-6 px-3 pb-3 flex flex-col justify-between overflow-hidden" id="app-screen">
+                                <!-- Top Bar -->
+                                <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 px-1">
+                                    <span>Siravis Pay</span>
+                                    <span class="text-emerald-400">● Live</span>
+                                </div>
+
+                                <!-- App Dynamic Body -->
+                                <div class="space-y-3 py-2" id="app-screen-body">
+                                    <div class="p-3 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
+                                        <span class="text-[10px] uppercase tracking-wider block opacity-80">Total Balance</span>
+                                        <span class="text-xl font-bold font-mono">$128,450.00</span>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <div class="text-[10px] text-slate-400 font-medium">Recent Activity</div>
+                                        <div class="p-2 rounded-xl bg-slate-950 flex justify-between items-center text-xs">
+                                            <span class="text-slate-200">AI Api Usage</span>
+                                            <span class="text-red-400 font-mono">-$24.00</span>
+                                        </div>
+                                        <div class="p-2 rounded-xl bg-slate-950 flex justify-between items-center text-xs">
+                                            <span class="text-slate-200">Payout</span>
+                                            <span class="text-emerald-400 font-mono">+$1,200.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Phone Bottom Nav -->
+                                <div class="bg-slate-950 rounded-xl p-2 flex justify-around text-slate-400 text-xs">
+                                    <button onclick="setAppScreen('home')" class="hover:text-emerald-400"><i data-lucide="home" class="w-4 h-4"></i></button>
+                                    <button onclick="setAppScreen('analytics')" class="hover:text-emerald-400"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
+                                    <button onclick="setAppScreen('settings')" class="hover:text-emerald-400"><i data-lucide="settings" class="w-4 h-4"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info side -->
+                        <div class="max-w-md space-y-4 text-center md:text-left">
+                            <h4 class="text-xl font-bold text-white">Native Mobile Experience</h4>
+                            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                                Experience 60 FPS smooth transitions, offline sync engines, multi-currency financial cryptography, and custom UI micro-animations built into Siravis Apps.
+                            </p>
+                            <div class="inline-flex items-center gap-2 text-xs text-emerald-400 font-mono bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i> Click mobile nav icons to test live route switches
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ECOSYSTEM ARCHITECTURE -->
+        <section id="ecosystem" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="glass-panel rounded-3xl p-8 sm:p-12 border border-slate-800 relative overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="text-xs font-semibold text-indigo-400 uppercase tracking-widest font-mono">Unified Infrastructure</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-6">How The Ecosystem Works Together</h2>
+                        
+                        <div class="space-y-6 text-sm text-slate-300">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">1</div>
+                                <div>
+                                    <h4 class="font-bold text-white mb-1">Centralized Data Core</h4>
+                                    <p class="text-slate-400 text-xs leading-relaxed">Siravis AI powers backend logic that seamlessly interfaces with both your Web Application and Mobile Apps.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">2</div>
+                                <div>
+                                    <h4 class="font-bold text-white mb-1">Immersive Media Integration</h4>
+                                    <p class="text-slate-400 text-xs leading-relaxed">3D motion graphics from Siravis Animation are directly exported to WebGL/Canvas pipelines for real-time web execution.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400 shrink-0">3</div>
+                                <div>
+                                    <h4 class="font-bold text-white mb-1">Single Deployment Workflow</h4>
+                                    <p class="text-slate-400 text-xs leading-relaxed">Deploy once across Web & Mobile platforms with integrated Vercel and CI/CD automated build pipelines.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4 font-mono text-xs text-slate-300">
+                        <div class="text-slate-500">// Siravis Platform Integration Blueprint</div>
+                        <div class="pl-2 border-l-2 border-indigo-500 space-y-2">
+                            <div><span class="text-purple-400">import</span> { SiravisAI, WebStudio, MobileSync } <span class="text-purple-400">from</span> <span class="text-emerald-400">'@siravis/core'</span>;</div>
+                            <div class="pt-2 text-slate-400"><i class="text-slate-500">// Initialize ecosystem orchestration</i></div>
+                            <div><span class="text-blue-400">const</span> app = <span class="text-purple-400">new</span> SiravisEcosystem({</div>
+                            <div class="pl-4">aiModel: <span class="text-emerald-400">'siravis-agent-v4'</span>,</div>
+                            <div class="pl-4">renderingEngine: <span class="text-emerald-400">'webgl-canvas'</span>,</div>
+                            <div class="pl-4">targetPlatforms: [<span class="text-emerald-400">'WEB'</span>, <span class="text-emerald-400">'IOS'</span>, <span class="text-emerald-400">'ANDROID'</span>]</div>
+                            <div>});</div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-xl text-emerald-400 border border-slate-800">
+                            ✔ Ecosystem Linked: All 4 Service Pipelines Active
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER / CONTACT SECTION -->
+        <footer id="contact" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-800/80">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="md:col-span-2 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-extrabold text-white text-sm">S</div>
+                        <span class="font-extrabold text-lg text-white">SIRAVIS</span>
+                    </div>
+                    <p class="text-slate-400 text-xs sm:text-sm max-w-sm leading-relaxed">
+                        The ultimate modern corporate digital platform providing AI, Animation, Web Development, and Mobile Application architecture.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="text-xs font-mono uppercase text-slate-300 font-bold mb-4 tracking-wider">Sub-Brands</h5>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="#services" onclick="filterServices('ai')" class="hover:text-indigo-400 transition">Siravis AI</a></li>
+                        <li><a href="#services" onclick="filterServices('animation')" class="hover:text-indigo-400 transition">Siravis Animation</a></li>
+                        <li><a href="#services" onclick="filterServices('web')" class="hover:text-indigo-400 transition">Siravis Web Studio</a></li>
+                        <li><a href="#services" onclick="filterServices('apps')" class="hover:text-indigo-400 transition">Siravis Apps</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="text-xs font-mono uppercase text-slate-300 font-bold mb-4 tracking-wider">Contact & Legal</h5>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="mailto:hello@siravis.com" class="hover:text-indigo-400 transition">hello@siravis.com</a></li>
+                        <li><a href="#" onclick="openBookingModal(); return false;" class="hover:text-indigo-400 transition">Schedule Consultation</a></li>
+                        <li><a href="#" class="hover:text-indigo-400 transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-indigo-400 transition">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-800/60 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+                <div>© 2026 Siravis Digital Platform. All rights reserved.</div>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="hover:text-slate-300"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                    <a href="#" class="hover:text-slate-300"><i data-lucide="github" class="w-4 h-4"></i></a>
+                    <a href="#" class="hover:text-slate-300"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- CONSULTATION & BOOKING MODAL -->
+    <div id="booking-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-xl rounded-3xl border border-slate-800 p-6 sm:p-8 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+            <!-- Close Button -->
+            <button onclick="closeBookingModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-2 rounded-xl bg-slate-900 border border-slate-800">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <h3 class="text-2xl font-bold text-white mb-1">Start Your Project with Siravis</h3>
+            <p class="text-xs text-slate-400 mb-6">Select your required services and project scope below.</p>
+
+            <form id="booking-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                <!-- Multi-select Sub-services -->
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-2">SELECT SERVICES</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 cursor-pointer hover:border-indigo-500">
+                            <input type="checkbox" name="services" value="ai" class="rounded accent-indigo-500"> Siravis AI
+                        </label>
+                        <label class="flex items-center gap-2 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 cursor-pointer hover:border-cyan-500">
+                            <input type="checkbox" name="services" value="animation" class="rounded accent-cyan-500"> Siravis Animation
+                        </label>
+                        <label class="flex items-center gap-2 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 cursor-pointer hover:border-violet-500">
+                            <input type="checkbox" name="services" value="web" class="rounded accent-violet-500"> Siravis Web Studio
+                        </label>
+                        <label class="flex items-center gap-2 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 cursor-pointer hover:border-emerald-500">
+                            <input type="checkbox" name="services" value="apps" class="rounded accent-emerald-500"> Siravis Apps
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Input Fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 mb-1">Your Name *</label>
+                        <input type="text" required placeholder="John Doe" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 mb-1">Email Address *</label>
+                        <input type="email" required placeholder="john@company.com" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Budget Slider -->
+                <div>
+                    <div class="flex justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span>ESTIMATED BUDGET</span>
+                        <span id="budget-val" class="text-indigo-400 font-bold">$10,000 - $25,000</span>
+                    </div>
+                    <input type="range" min="1000" max="100000" step="2500" value="15000" id="budget-range" oninput="updateBudgetVal()" class="w-full accent-indigo-500 bg-slate-900">
+                </div>
+
+                <!-- File Attachment Mock -->
+                <div>
+                    <label class="block text-xs font-mono text-slate-400 mb-1">ATTACH SPECIFICATION / BRIEF (OPTIONAL)</label>
+                    <div class="border-2 border-dashed border-slate-800 rounded-2xl p-4 text-center cursor-pointer hover:border-indigo-500/50 transition">
+                        <i data-lucide="upload-cloud" class="w-6 h-6 text-slate-500 mx-auto mb-1"></i>
+                        <span class="text-xs text-slate-400">Drag & drop brief or <span class="text-indigo-400">browse file</span></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition shadow-lg shadow-indigo-600/30">
+                    Submit Project Inquiry
+                </button>
+            </form>
+
+            <div id="form-success" class="hidden text-center py-8 space-y-3">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                    <i data-lucide="check" class="w-6 h-6"></i>
+                </div>
+                <h4 class="text-lg font-bold text-white">Inquiry Received!</h4>
+                <p class="text-xs text-slate-400">Our team will review your specifications and respond within 24 hours.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL MODAL FOR SUB-BRANDS -->
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-2xl rounded-3xl border border-slate-800 p-6 sm:p-8 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+            <button onclick="closeDetailModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-2 rounded-xl bg-slate-900 border border-slate-800">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            <div id="detail-modal-content">
+                <!-- Dynamically Populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Canvas Particles Background
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.8 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(99, 102, 241, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+        function animateBg() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        // Filter Services Tabs
+        function filterServices(category) {
+            const cards = document.querySelectorAll('.service-card');
+            const tabs = document.querySelectorAll('.service-tab');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('bg-indigo-600', 'text-white');
+                tab.classList.add('text-slate-400');
+            });
+
+            const activeTab = document.getElementById(`tab-${category}`);
+            if (activeTab) {
+                activeTab.classList.add('bg-indigo-600', 'text-white');
+                activeTab.classList.remove('text-slate-400');
+            }
+
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Playground Switcher
+        function switchPlayground(target) {
+            const tabs = document.querySelectorAll('.pg-tab');
+            const panels = document.querySelectorAll('.pg-panel');
+
+            tabs.forEach(t => {
+                t.classList.remove('bg-indigo-600', 'border-indigo-500', 'text-white');
+                t.classList.add('bg-slate-900', 'border-slate-800', 'text-slate-400');
+            });
+
+            panels.forEach(p => p.classList.add('hidden'));
+
+            const activeTab = document.getElementById(`pg-tab-${target}`);
+            const activePanel = document.getElementById(`pg-panel-${target}`);
+
+            if (activeTab && activePanel) {
+                activeTab.classList.add('bg-indigo-600', 'border-indigo-500', 'text-white');
+                activeTab.classList.remove('bg-slate-900', 'border-slate-800', 'text-slate-400');
+                activePanel.classList.remove('hidden');
+            }
+
+            if (target === 'animation') initVfxCanvas();
+        }
+
+        // AI Playground Demo Logic
+        function setAiPrompt(text) {
+            document.getElementById('ai-input').value = text;
+        }
+
+        function runAiDemo() {
+            const input = document.getElementById('ai-input');
+            const box = document.getElementById('chat-box');
+
+            if (!input.value.trim()) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = "bg-slate-800 p-3 rounded-xl text-slate-200 border border-slate-700 max-w-[85%] ml-auto text-right";
+            userMsg.innerHTML = `<span class="text-[10px] text-slate-400 font-bold block mb-1">YOU:</span> ${input.value}`;
+            box.appendChild(userMsg);
+
+            const promptText = input.value;
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = "bg-slate-900/90 p-3 rounded-xl text-emerald-300 border border-slate-800 max-w-[85%]";
+                aiMsg.innerHTML = `<span class="text-[10px] text-emerald-400 font-bold block mb-1">SIRAVIS AI:</span> Computed workflow response for "${promptText.substring(0, 20)}...": Task successfully assigned to Siravis Automated Execution Core. Confidence metric: 99.8%.`;
+                box.appendChild(aiMsg);
+                box.scrollTop = box.scrollHeight;
+            }, 800);
+        }
+
+        // VFX Engine Canvas Playground
+        let vfxCanvas, vfxCtx, vfxParticles = [], vfxAnimId;
+        function initVfxCanvas() {
+            vfxCanvas = document.getElementById('vfx-canvas');
+            if (!vfxCanvas) return;
+            vfxCtx = vfxCanvas.getContext('2d');
+            vfxCanvas.width = vfxCanvas.offsetWidth;
+            vfxCanvas.height = vfxCanvas.offsetHeight;
+
+            updateAnimParams();
+            if (vfxAnimId) cancelAnimationFrame(vfxAnimId);
+            renderVfx();
+        }
+
+        function updateAnimParams() {
+            const speed = parseFloat(document.getElementById('anim-speed')?.value || 1.5);
+            const count = parseInt(document.getElementById('anim-count')?.value || 150);
+
+            document.getElementById('speed-val').innerText = speed + 'x';
+            document.getElementById('count-val').innerText = count;
+
+            vfxParticles = [];
+            for (let i = 0; i < count; i++) {
+                vfxParticles.push({
+                    x: Math.random() * (vfxCanvas?.width || 300),
+                    y: Math.random() * (vfxCanvas?.height || 200),
+                    vx: (Math.random() - 0.5) * speed * 2,
+                    vy: (Math.random() - 0.5) * speed * 2,
+                    color: Math.random() > 0.5 ? '#06b6d4' : '#6366f1'
+                });
+            }
+        }
+
+        function renderVfx() {
+            if (!vfxCtx) return;
+            vfxCtx.fillStyle = 'rgba(3, 7, 18, 0.2)';
+            vfxCtx.fillRect(0, 0, vfxCanvas.width, vfxCanvas.height);
+
+            vfxParticles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > vfxCanvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > vfxCanvas.height) p.vy *= -1;
+
+                vfxCtx.fillStyle = p.color;
+                vfxCtx.beginPath();
+                vfxCtx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                vfxCtx.fill();
+            });
+
+            vfxAnimId = requestAnimationFrame(renderVfx);
+        }
+
+        // Web Studio Device Frame Switcher
+        function setWebViewport(mode) {
+            const frame = document.getElementById('web-frame-wrapper');
+            const btns = [document.getElementById('vp-desktop'), document.getElementById('vp-tablet'), document.getElementById('vp-mobile')];
+
+            btns.forEach(b => {
+                b.classList.remove('bg-violet-600', 'text-white');
+                b.classList.add('text-slate-400');
+            });
+
+            const activeBtn = document.getElementById(`vp-${mode}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-violet-600', 'text-white');
+                activeBtn.classList.remove('text-slate-400');
+            }
+
+            if (mode === 'desktop') frame.className = "w-full max-w-4xl transition-all duration-500 border border-slate-800 rounded-2xl overflow-hidden bg-slate-950 shadow-2xl";
+            if (mode === 'tablet') frame.className = "w-full max-w-xl transition-all duration-500 border border-slate-800 rounded-2xl overflow-hidden bg-slate-950 shadow-2xl";
+            if (mode === 'mobile') frame.className = "w-full max-w-xs transition-all duration-500 border border-slate-800 rounded-2xl overflow-hidden bg-slate-950 shadow-2xl";
+        }
+
+        // App Screen Navigation Switcher
+        function setAppScreen(screen) {
+            const body = document.getElementById('app-screen-body');
+            if (screen === 'home') {
+                body.innerHTML = `
+                    <div class="p-3 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
+                        <span class="text-[10px] uppercase tracking-wider block opacity-80">Total Balance</span>
+                        <span class="text-xl font-bold font-mono">$128,450.00</span>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="text-[10px] text-slate-400 font-medium">Recent Activity</div>
+                        <div class="p-2 rounded-xl bg-slate-950 flex justify-between items-center text-xs">
+                            <span class="text-slate-200">AI Api Usage</span>
+                            <span class="text-red-400 font-mono">-$24.00</span>
+                        </div>
+                    </div>`;
+            } else if (screen === 'analytics') {
+                body.innerHTML = `
+                    <div class="p-3 rounded-2xl bg-slate-950 text-white border border-slate-800">
+                        <span class="text-[10px] text-emerald-400 font-bold block">MONTHLY TRAFFIC</span>
+                        <div class="text-lg font-bold font-mono mt-1">2.4M Visits</div>
+                        <div class="w-full bg-slate-900 h-2 rounded-full mt-2 overflow-hidden">
+                            <div class="bg-emerald-500 h-full w-[78%]"></div>
+                        </div>
+                    </div>`;
+            } else if (screen === 'settings') {
+                body.innerHTML = `
+                    <div class="space-y-2 text-xs text-slate-300">
+                        <div class="p-2 bg-slate-950 rounded-xl flex justify-between items-center">
+                            <span>Biometric Lock</span>
+                            <span class="text-emerald-400">ON</span>
+                        </div>
+                        <div class="p-2 bg-slate-950 rounded-xl flex justify-between items-center">
+                            <span>Offline Sync</span>
+                            <span class="text-emerald-400">Active</span>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        // Modals Controls
+        function openBookingModal() {
+            const modal = document.getElementById('booking-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('booking-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-100');
+        }
+
+        function updateBudgetVal() {
+            const val = parseInt(document.getElementById('budget-range').value);
+            document.getElementById('budget-val').innerText = `$${val.toLocaleString()} USD`;
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            document.getElementById('booking-form').classList.add('hidden');
+            document.getElementById('form-success').classList.remove('hidden');
+        }
+
+        // Sub-brand detail modal details content mapping
+        const subBrandDetails = {
+            ai: {
+                title: "Siravis AI Architecture",
+                desc: "Enterprise Machine Learning and LLM Ecosystem",
+                points: ["Custom Model Fine-tuning", "Autonomous RAG Knowledge bases", "Multi-Agent Workflow Pipelines", "NLP & Vision Processing"]
+            },
+            animation: {
+                title: "Siravis Motion & Visual FX Studio",
+                desc: "High-End Visual Media & Motion Graphics",
+                points: ["Interactive WebGL Shaders", "3D Cinematic Product Displays", "Commercial Broadcast VFX", "Real-time Motion Design"]
+            },
+            web: {
+                title: "Siravis Web Software Studio",
+                desc: "High-Throughput Modern Web Architectures",
+                points: ["Next.js & React Frameworks", "Micro-frontend Architectures", "Headless CMS Integration", "Sub-second Serverless Endpoints"]
+            },
+            apps: {
+                title: "Siravis Cross-Platform Apps",
+                desc: "Enterprise Mobile Software Engineering",
+                points: ["Native iOS & Android Performance", "Biometric Encryption Security", "Offline Realtime Synchronization", "Unified Multi-Device Design Systems"]
+            }
+        };
+
+        function openDetailModal(key) {
+            const data = subBrandDetails[key];
+            if (!data) return;
+
+            const content = document.getElementById('detail-modal-content');
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <span class="text-xs font-mono px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">EXTENDED SPECIFICATION</span>
+                    <h3 class="text-2xl font-bold text-white">${data.title}</h3>
+                    <p class="text-sm text-slate-400">${data.desc}</p>
+                    <div class="space-y-2 pt-4">
+                        <h5 class="text-xs font-mono text-slate-300 font-bold">CORE CAPABILITIES:</h5>
+                        ${data.points.map(pt => `<div class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-400"></i> ${pt}</div>`).join('')}
+                    </div>
+                    <div class="pt-6 flex justify-end">
+                        <button onclick="closeDetailModal(); openBookingModal();" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition">
+                            Book This Service
+                        </button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+
+            const modal = document.getElementById('detail-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+        }
+
+        function closeDetailModal() {
+            const modal = document.getElementById('detail-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-100');
+        }
+
+        // Toggle Visual Accent Glow Mode
+        function toggleGlowMode() {
+            document.body.classList.toggle('glow-accent-active');
+            const nav = document.getElementById('navbar');
+            nav.classList.toggle('border-indigo-500/40');
+        }
+    </script>
+</body>
+</html>
